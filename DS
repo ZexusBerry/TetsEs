@@ -1,4 +1,4 @@
-local HeadSize = 30
+local HeadSize = 300
 local Transparency = 0.7
 
 local Disabled = true
