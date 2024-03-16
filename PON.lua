@@ -1,10 +1,11 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
+local RunService = game:GetService("RunService")
 local Drawing = game:GetService("Drawing")
 
 local line = Drawing.new("Line")
-line.Visible = true
+line.Visible = false
 line.Thickness = 2
 line.Transparency = 0.5
 line.Color = Color3.fromRGB(255, 0, 0)
@@ -16,6 +17,7 @@ local function createTracer(character)
         local endPoint = Camera:WorldToViewportPoint(humanoidRootPart.Position)
         line.From = Vector2.new(startPoint.X, startPoint.Y)
         line.To = Vector2.new(endPoint.X, endPoint.Y)
+        line.Visible = true
     end
 end
 
@@ -28,7 +30,7 @@ local function checkForTracers()
     end
 end
 
-game:GetService("RunService").RenderStepped:Connect(function()
-    line.Visible = true
+RunService.RenderStepped:Connect(function()
+    line.Visible = false
     checkForTracers()
 end)
