@@ -1,18 +1,24 @@
-while wait(0.1) do
-	for i, childrik in ipairs(workspace:GetDescendants()) do
-		if childrik:FindFirstChild("Humanoid") then
-			if not childrik:FindFirstChild("EspBox") then
-				if childrik ~= game.Players.LocalPlayer.Character then
-					local esp = Instance.new("BoxHandleAdornment",childrik)
-					esp.Adornee = childrik
-					esp.ZIndex = 0
-					esp.Size = Vector3.new(5, 5, 3)
-					esp.Transparency = 0.25
-					esp.Color3 = Color3.fromRGB(214, 9, 9)
-					esp.AlwaysOnTop = true
-					esp.Name = "EspBox"
-				end
-			end
-		end
-	end
-end
+local HeadSize = 30
+local Transparency = 0.7
+
+-- Флаг, указывающий, активирована ли функциональность
+local Disabled = true
+
+game:GetService('RunService').RenderStepped:Connect(function()
+    if Disabled then
+        for _, player in ipairs(game:GetService('Players'):GetPlayers()) do
+            if player.Name ~= game:GetService('Players').LocalPlayer.Name then
+                pcall(function()
+                    local character = player.Character
+                    if character then
+                        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                        if humanoidRootPart then
+                            humanoidRootPart.Size = Vector3.new(HeadSize, HeadSize, HeadSize)
+                            humanoidRootPart.Transparency = Transparency
+                        end
+                    end
+                end)
+            end
+        end
+    end
+end)
