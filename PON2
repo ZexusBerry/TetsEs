@@ -1,7 +1,6 @@
 local HeadSize = 30
 local Transparency = 0.7
 
--- Флаг, указывающий, активирована ли функциональность
 local Disabled = true
 
 game:GetService('RunService').RenderStepped:Connect(function()
