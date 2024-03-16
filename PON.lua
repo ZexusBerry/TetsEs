@@ -2,6 +2,8 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 
+local tracers = {}
+
 local function createTracer(character)
     local humanoid = character:FindFirstChildOfClass("Humanoid")
     if humanoid then
@@ -15,28 +17,56 @@ local function createTracer(character)
             tracer.Color = Color3.fromRGB(255, 0, 0)
             tracer.Name = "Tracer"
             tracer.Parent = workspace
-            
-            local weld = Instance.new("WeldConstraint")
-            weld.Part0 = LocalPlayer.Character.HumanoidRootPart
-            weld.Part1 = tracer
-            weld.Parent = LocalPlayer.Character.HumanoidRootPart
-            
-            tracer.Position = (rootPart.Position + LocalPlayer.Character.HumanoidRootPart.Position) / 2
+
+            local connection
+            connection = rootPart:GetPropertyChangedSignal("Position"):Connect(function()
+                if rootPart and tracer and tracer.Parent then
+                    tracer.Size = Vector3.new(0.1, 0.1, (rootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).magnitude)
+                    tracer.CFrame = CFrame.new(LocalPlayer.Character.HumanoidRootPart.Position, rootPart.Position)
+                else
+                    connection:Disconnect()
+                end
+            end)
+
+            tracers[character] = tracer
+        end
+    end
+end
+
+local function updateTracers()
+    for character, tracer in pairs(tracers) do
+        if character.Parent and character:FindFirstChild("HumanoidRootPart") then
+            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            tracer.Size = Vector3.new(0.1, 0.1, (rootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).magnitude)
             tracer.CFrame = CFrame.new(LocalPlayer.Character.HumanoidRootPart.Position, rootPart.Position)
+            tracer.Parent = workspace
+        else
+            tracer:Destroy()
+            tracers[character] = nil
         end
     end
 end
 
-local function checkForTracers()
-    for _, player in ipairs(Players:GetPlayers()) do
-        local character = player.Character
-        if character and character ~= LocalPlayer.Character then
-            createTracer(character)
-        end
+local function onPlayerAdded(player)
+    player.CharacterAdded:Connect(function(character)
+        createTracer(character)
+    end)
+end
+
+local function onPlayerRemoving(player)
+    if tracers[player.Character] then
+        tracers[player.Character]:Destroy()
+        tracers[player.Character] = nil
     end
 end
 
-while true do
-    checkForTracers()
-    wait(0.1)
+Players.PlayerAdded:Connect(onPlayerAdded)
+Players.PlayerRemoving:Connect(onPlayerRemoving)
+
+for _, player in ipairs(Players:GetPlayers()) do
+    onPlayerAdded(player)
 end
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    updateTracers()
+end)
