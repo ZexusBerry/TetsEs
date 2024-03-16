@@ -1,0 +1,24 @@
+local HeadSize = 3000
+local Transparency = 0.7
+
+-- Флаг, указывающий, активирована ли функциональность
+local Disabled = true
+
+game:GetService('RunService').RenderStepped:Connect(function()
+    if Disabled then
+        for _, player in ipairs(game:GetService('Players'):GetPlayers()) do
+            if player.Name ~= game:GetService('Players').LocalPlayer.Name then
+                pcall(function()
+                    local character = player.Character
+                    if character then
+                        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                        if humanoidRootPart then
+                            humanoidRootPart.Size = Vector3.new(HeadSize, HeadSize, HeadSize)
+                            humanoidRootPart.Transparency = Transparency
+                        end
+                    end
+                end)
+            end
+        end
+    end
+end)
