@@ -2,7 +2,7 @@
 	for i, childrik in ipairs(workspace:GetDescendants()) do
 		if childrik:FindFirstChild("Humanoid") then
 			if not childrik:FindFirstChild("EspBox") then
-				if childrik ~= game.Players.LocalPlayer.Character then
+				if childrik ~= game.Players.LocalPlayer.Character then 
 					local esp = Instance.new("BoxHandleAdornment",childrik)
 					esp.Adornee = childrik
 					esp.ZIndex = 0
