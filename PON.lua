@@ -10,7 +10,7 @@ local function createTracer(character)
         local rootPart = character:FindFirstChild("HumanoidRootPart")
         if rootPart then
             local tracer = Instance.new("Part")
-            tracer.Size = Vector3.new(0.1, 0.1, (rootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).magnitude)
+            tracer.Size = Vector3.new(0.1, 0.1, 1) -- Начальная длина, может быть изменена
             tracer.Anchored = true
             tracer.CanCollide = false
             tracer.Transparency = 0.5
@@ -21,8 +21,8 @@ local function createTracer(character)
             local connection
             connection = rootPart:GetPropertyChangedSignal("Position"):Connect(function()
                 if rootPart and tracer and tracer.Parent then
-                    tracer.Size = Vector3.new(0.1, 0.1, (rootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).magnitude)
                     tracer.CFrame = CFrame.new(LocalPlayer.Character.HumanoidRootPart.Position, rootPart.Position)
+                    tracer.Size = Vector3.new(0.1, 0.1, (rootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).magnitude)
                 else
                     connection:Disconnect()
                 end
@@ -37,9 +37,8 @@ local function updateTracers()
     for character, tracer in pairs(tracers) do
         if character.Parent and character:FindFirstChild("HumanoidRootPart") then
             local rootPart = character:FindFirstChild("HumanoidRootPart")
-            tracer.Size = Vector3.new(0.1, 0.1, (rootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).magnitude)
             tracer.CFrame = CFrame.new(LocalPlayer.Character.HumanoidRootPart.Position, rootPart.Position)
-            tracer.Parent = workspace
+            tracer.Size = Vector3.new(0.1, 0.1, (rootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).magnitude)
         else
             tracer:Destroy()
             tracers[character] = nil
