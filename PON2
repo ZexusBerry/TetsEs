@@ -1,4 +1,4 @@
-local HeadSize = 3000
+local HeadSize = 30
 local Transparency = 0.7
 
 -- Флаг, указывающий, активирована ли функциональность
